@@ -8,11 +8,11 @@ A time series project to forecast the personal bankruptcy rate in Canada. Model 
 ## Table of Content
 - Project Goal
 - Data Source
-- Modeling
+- [Modeling](#Modeling)
 	- Univariate Model
 	- Multivariate Model
 	- Results
-- Summary
+- [Summary](#Summary)
 
 ## Project Goal
 Our goal in this report is to use different time series approaches to learn an optimal model from the training data and use this model with the test data to forecast the national bankruptcy rate in Canada between January2015 and December 2017.      
@@ -25,7 +25,8 @@ unemployment rate, population, housing price index
 - Plot of bankruptcy rate      
 ![BankruptcyRate](Fig/Bankruptcy_rate.png)
 
-## Modeling
+## Modeling<a name="Modeling"/>   
+     
 ### Univariate Model
    
 - Box-Jenkins Method     
@@ -33,7 +34,7 @@ unemployment rate, population, housing price index
           
 ### Multivariate Model
      
-- Exogenous: Box-Jenkins Method
+- Exogenous: Box-Jenkins Method ([SARIMAX](ModelFittingSARIMAX.Rmd))
 - Endogenous: Vector Autoregressive Model (VAR)
 
 ### Results     
@@ -51,7 +52,8 @@ It turns out that SARIMAX performs the best with RMSE 0.206. The predicted bankr
 The residuals plot and ACF plot shows that the model is consistent with the time series model      
 ![Assumption](Fig/Model_assumption_test.png)   
      
-## Summary
+## Summary<a name="Summary"/>  
+   
 The forecasting bankruptcy rate based on this model is plotted in Fig below.  The blue line represents the mean of the prediction.  The shadows represent different prediction intervals, which are estimates  of  an  interval  in  which  a  future  observation  will  fall  with  a  certain  probability.   The  dark  shadow represents the 80% prediction interval and the light shadow represents the 95% prediction interval.  Based on our  prediction  results,  the  mean  value  of  personal  bankruptcy  rate  ranges  from  3  to  a  little  above  4.   The bankruptcy  rate  is  relative  stable  compared  with  previous  years,  which  contributes  to  economic  stability  inCanada.  According to our prediction intervals, with 95% probability, the personal bankruptcy rates from 2015to 2017 ranges from 3 to 5.  The bankruptcy rate will not exceed 5 with 95% probability, which is a good signal for the economy in Canada.     
 
 ![Forecast](Fig/Forecast_Final.png)     

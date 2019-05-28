@@ -49,7 +49,7 @@ It turns out that SARIMAX performs the best with RMSE 0.206. The predicted bankr
 ![Prediction](Fig/Forecasting_with_SARIMAX.png)     
 
 The residuals plot and ACF plot shows that the model is consistent with the time series model      
-![Assumption](Fig/Fig/Model_assumption_test.png)   
+![Assumption](Fig/Model_assumption_test.png)   
      
 ## Summary
 The forecasting bankruptcy rate based on this model is plotted in Fig below.  The blue line represents the mean of the prediction.  The shadows represent different prediction intervals, which are estimates  of  an  interval  in  which  a  future  observation  will  fall  with  a  certain  probability.   The  dark  shadow represents the 80% prediction interval and the light shadow represents the 95% prediction interval.  Based on our  prediction  results,  the  mean  value  of  personal  bankruptcy  rate  ranges  from  3  to  a  little  above  4.   The bankruptcy  rate  is  relative  stable  compared  with  previous  years,  which  contributes  to  economic  stability  inCanada.  According to our prediction intervals, with 95% probability, the personal bankruptcy rates from 2015to 2017 ranges from 3 to 5.  The bankruptcy rate will not exceed 5 with 95% probability, which is a good signal for the economy in Canada.     

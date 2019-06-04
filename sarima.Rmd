@@ -1,0 +1,128 @@
+---
+title: "Group_SARIMAX"
+author: "Group_1_4"
+date: "12/1/2018"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tseries)
+library(forecast)
+library(tidyverse)
+library(vars)
+```
+## Load data and visualize data   
+   
+```{r}
+setwd('/Users/brianwright/classes/msds604-TS/final')
+train = read.csv('train.csv')
+test = read.csv('test.csv')
+
+# Split train data to train and validataion data, roughly based on 8:2 rule  
+train_tr = train[1:288,]
+train_tv = train[289:336,]
+## train
+BankrupRate_tr <- ts(train_tr$Bankruptcy_Rate, 
+                   start = c(1987,1), end = c(2010,12), frequency = 12)
+UnempRate_tr <- ts(train_tr$Unemployment_Rate, 
+                   start = c(1987,1), end = c(2010,12), frequency = 12)
+Pop_tr <- ts(train_tr$Population, 
+                   start = c(1987,1), end = c(2010,12), frequency = 12)
+HousePriIdx_tr <- ts(train_tr$House_Price_Index, 
+                   start = c(1987,1), end = c(2010,12), frequency = 12)
+# validation
+BankrupRate_tv <- ts(train_tv$Bankruptcy_Rate, 
+                   start = c(2011,1), end = c(2014,12), frequency = 12)
+UnempRate_tv <- ts(train_tv$Unemployment_Rate, 
+                   start = c(2011,1), end = c(2014,12), frequency = 12)
+Pop_tv <- ts(train_tv$Population, 
+                   start = c(2011,1), end = c(2014,12), frequency = 12)
+HousePriIdx_tv <- ts(train_tv$House_Price_Index, 
+                   start = c(2011,1), end = c(2014,12), frequency = 12)
+# test
+UnempRate_te <- ts(test$Unemployment_Rate, 
+                   start = c(2015,1), end = c(2017,12), frequency = 12)
+Pop_te <- ts(test$Population, 
+                   start = c(2015,1), end = c(2017,12), frequency = 12)
+HousePriIdx_te <- ts(test$House_Price_Index, 
+                   start = c(2015,1), end = c(2017,12), frequency = 12)
+
+```
+    
+```{r}
+# Visualize each time series
+par(mfrow=c(2,2))
+plot(BankrupRate_tr)
+plot(UnempRate_tr)
+plot(Pop_tr)
+plot(HousePriIdx_tr)
+```
+    
+Bankruptcy rate is the variable we concerned, having both seasonality and trend.  
+      
+```{r}
+par(mfrow=c(2,2))
+acf(BankrupRate_tr)
+ccf(BankrupRate_tr, UnempRate_tr)
+ccf(BankrupRate_tr, Pop_tr)
+ccf(BankrupRate_tr, HousePriIdx_tr)
+```
+    
+## Fit Models and evaluate it based on rmse (Should include breif reasoning and graphs to support, also model diagonal if applicable)    
+example:   
+### select d, m and D       
+```{r}
+plot(BankrupRate_tr)
+ndiffs(BankrupRate_tr) # 1
+d1_BankrupRate_tr <- diff(BankrupRate_tr)
+adf.test(d1_BankrupRate_tr)
+acf(d1_BankrupRate_tr,lag.max = 144)
+
+# seasonality every 12 monthes?
+s12_d1_BankrupRate_tr <- (diff(d1_BankrupRate_tr,lag=12))
+acf(s12_d1_BankrupRate_tr,lag.max = 144)
+
+(blambda <- BoxCox.lambda(BankrupRate_tr))
+
+
+best_model_2 <- arima(BankrupRate_tr, order = c(4,1,5),
+                       seasonal = list(order = c(2, 1, 2), period=12),
+                       method = "CSS")
+
+```
+    
+    
+    
+```{r}
+par(mfrow=c(1,1))
+plot(BankrupRate_tr,main='SARIMA Model for Bankruptcy Rate',ylab='Bankruptcy %')
+fit <- BankrupRate_tr - best_model$residuals
+lines(fit, col = "red")
+legend("bottomright", legend = c("Observed", "Predicted"), lty = 1, col = c("black", "red"), cex = 0.5)
+
+```
+
+```{r}
+best_model <- Arima(y=log(BankrupRate_tr),order = c(2,1,0),seasonal = list(order=c(1,0,2),period=12),method='CSS')
+best_model_3 <- Arima(y=log(BankrupRate_tr),order = c(3,1,3),seasonal = list(order=c(2,0,0),period=12))
+y <- forecast(best_model, h=72)
+y_2 <- (forecast(best_model_2, h=72))
+rmse <- sqrt(mean((exp(y$mean) - BankrupRate_tv)^2))
+rmse_2 <- sqrt(mean(((y_2$mean) - BankrupRate_tv)^2))
+plot(forecast(object = best_model, h = 72, level = 0.95))
+
+```
+
+
+```{r}
+ar(mfrow=c(1,1))
+plot(BankrupRate_tr)
+fit <- BankrupRate_tr - m$residuals
+lines(fit, col = "red")
+legend("bottomright", legend = c("Observed", "Predicted"), lty = 1, col = c("black", "red"), cex = 0.5)
+```
+
+Collapse 
+Message Input
